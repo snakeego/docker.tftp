@@ -1,6 +1,15 @@
-FROM alpine:3.4
-RUN apk add --no-cache tftp-hpa
-VOLUME /var/tftpboot
+FROM alpine:latest
+
+COPY ./docker-entrypoint.sh /
+ADD http://af.it-test.pw/su-exec/alpine/suexec /usr/local/bin/suexec
+
+RUN set -x \
+    && apk --update --no-cache add tftp-hpa \
+    && chmod +x /docker-entrypoint.sh /usr/local/bin/suexec \
+    && mkdir /tftp 
+
+VOLUME /tftp
 EXPOSE 69/udp
-ENTRYPOINT ["in.tftpd"]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["-L", "--secure", "/var/tftpboot"]
