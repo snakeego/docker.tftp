@@ -7,7 +7,7 @@ CMD='in.tftpd'
 if [ ! -d "/tftp" ]; then mkdir /tftp; fi
 
 if [ "${1:0:1}" = '-' ]; then
-    set -- "/usr/local/bin/suexec" $USER $CMD "$@"; 
+    set -- $CMD "$@"; 
 fi
 
 if [ "$1" = $CMD ] && [ "$(id -u)" = '0' ]; then
@@ -15,7 +15,7 @@ if [ "$1" = $CMD ] && [ "$(id -u)" = '0' ]; then
     
     [ "$(stat -c %U /tftp)" = $USER ] || chown -R $USER /tftp
     
-    set -- "/usr/local/bin/suexec" $USER $CMD "$@"
+    set -- $CMD -u $USER "$@"
 fi
 
 exec "$@"
